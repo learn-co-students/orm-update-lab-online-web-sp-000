@@ -26,7 +26,7 @@ class Student
   end
   
   def save
-    if DB[:conn].execute("SELECT id FROM students WHERE id = ?", @id).count == 0
+    if !self.id 
       Student.create(@name, @grade)
       @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]    
     else      

@@ -4,7 +4,7 @@ class Student
   attr_accessor :name, :grade
   attr_reader :id
 
-  def initialize(id = nil, name, grade)
+  def initialize(name, grade, id = nil)
     @id = id
     @name = name
     @grade = grade
@@ -18,6 +18,7 @@ class Student
         grade TEXT
       )
     SQL
+
     DB[:conn].execute(sql)
   end
 
@@ -30,32 +31,30 @@ class Student
     if self.id
       self.update
     else
-      sql = <<-SQL
-        INSERT INTO students (name, grade)
-        VALUES (?, ?)
-      SQL
+      sql = "INSERT INTO students (name, grade) VALUES (?, ?)"
+
       DB[:conn].execute(sql, self.name, self.grade)
-      @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+
+      @id = DB[:conn].execute("SELECT last_insert_rowid()")[0][0]
     end
+    self
   end
 
   def self.create(name, grade)
-    student = Student.new(name, grade)
-    student.save
-    student
+    Student.new(name, grade).save
   end
 
   def self.new_from_db(row)
     id = row[0]
     name = row[1]
     grade = row[2]
-    self.new(id, name, grade)
+    self.new(name, grade, id)
   end
 
   def self.find_by_name(name)
     sql = "SELECT * FROM students WHERE name = ?"
     result = DB[:conn].execute(sql, name)[0]
-    Student.new(result[0], result[1], result[2])
+    Student.new(result[1], result[2], result[0])
   end
 
   def update

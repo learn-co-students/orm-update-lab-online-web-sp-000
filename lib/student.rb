@@ -5,7 +5,8 @@ class Student
     
     def initialize(id = nil, name, grade)
       @name = name
-      @grade = grade 
+      @grade = grade
+      @id = id
     end 
     
     def self.create_table 
@@ -32,15 +33,13 @@ class Student
     
     def self.create(name, grade)
       new_student = self.new(name, grade)
-      student.save 
-      student 
+      new_student.save 
+      new_student 
     end 
   
     def self.new_from_db(row)
-      student = self.new 
-      student.id = row[0]
-      student.name = row[1]
-      student.grade = row[2]
+      student = self.new(row[0], row[1], row[2]) 
+      
       student 
     end 
   # Remember, you can access your database connection anywhere in this class
@@ -54,8 +53,8 @@ class Student
   end 
   
   def update
-    sql = "UPDATE songs SET name = ?, album = ? WHERE id = ?" 
-    DB[:conn].execute(sql, self.name, self.album, self.id)
+    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?" 
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
 
 

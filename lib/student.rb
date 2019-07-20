@@ -85,7 +85,7 @@ class Student
       DB[:conn].execute(sql,name).map do |row|
         self.new_from_db(row)
       end.first
-    
+    # This works as well. 
     #self.new_from_db(DB[:conn].execute(sql, name).first)
   end
 end

@@ -70,9 +70,10 @@ class Student
     # that is the row returned from the database by the execution 
     # of a SQL query. We can anticipate that this array will contain 
     # three elements in this order: the id, name and grade of a student.
-
     # The .new_from_db method uses these three array elements to create 
     # a new Student object with these attributes.
+    new_student = Student.new(row[0], row[1], row[2]) 
+    new_student
   end 
 
   def self.find_by_name(name) 

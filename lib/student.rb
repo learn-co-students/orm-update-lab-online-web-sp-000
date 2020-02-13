@@ -6,7 +6,7 @@ class Student
   # Remember, you can access your database connection anywhere in this class
   #  with DB[:conn]
   # Takes in 3 args id, name, grade. id = nil 
-  def initialize(id, name, grade)
+  def initialize(id = nil, name, grade)
     @id = id 
     @name = name 
     @grade = grade 
@@ -17,6 +17,15 @@ class Student
     # that match the attributes of our individual 
     # students: an id (which is the primary key), 
     # the name and the grade.
+    sql = <<-SQL 
+      CREATE TABLE students (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        grade INTEGER
+      )
+    SQL
+    
+    DB[:conn].execute(sql) 
   end 
 
   def self.drop_table 

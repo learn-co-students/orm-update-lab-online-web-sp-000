@@ -81,6 +81,16 @@ class Student
     # for a record that has a name of the name passed in as an argument. Then it uses the 
     # #new_from_db method to instantiate a Student object with the database row that the SQL 
     # query returns.
+    sql = <<-SQL 
+      SELECT * FROM students 
+      WHERE name = ?
+    SQL
+    #binding.pry 
+    student_name = nil 
+    DB[:conn].execute(sql, name).each do |row|
+      student_name = self.new_from_db(row)
+    end 
+    student_name 
   end 
 
   def update 

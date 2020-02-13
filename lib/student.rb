@@ -31,6 +31,11 @@ class Student
   def self.drop_table 
     # This class method should be responsible 
     # for dropping the students table.
+    sql = <<-SQL
+      DROP TABLE students 
+    SQL
+
+    DB[:conn].execute(sql) 
   end 
 
   def save 
@@ -38,11 +43,25 @@ class Student
     # using the attributes of the given object. This method 
     # also assigns the id attribute of the object once the 
     # row has been inserted into the database.
+    # if self.id 
+    #   self.update 
+    # else 
+    sql = <<-SQL 
+      INSERT INTO students (name, grade)
+      VALUES (?, ?)
+    SQL
+
+    DB[:conn].execute(sql, self.name, self.grade)
+    @id = DB[:conn].execute("SELECT last_insert_rowid()
+    FROM students")[0][0]
   end 
 
-  def self.create 
+  def self.create(name, grade)
     # This method creates a student with two attributes, name and grade, 
     # and saves it into the students table.
+    student = Student.new(name, grade)
+    student.save 
+    student 
   end 
 
   def self.new_from_db(row)
@@ -65,6 +84,8 @@ class Student
 
   def update 
     # This method updates the database row mapped to the given Student instance.
+    # sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
+    # DB[:conn].execute(sql, self.name, self.grade, self.id)
   end 
 end
 

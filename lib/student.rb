@@ -51,4 +51,19 @@ class Student
 
     DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
+
+  def self.create(name, grade)
+    new_student = Student.new(name,grade)
+    new_student.save
+  end
+
+  def self.new_from_db(row)
+    new_student = Student.new(row[0], row[1], row[2])
+  end
+
+  def self.find_by_name(name)
+    sql = "SELECT * FROM students WHERE name = ?"
+    student_row = DB[:conn].execute(sql, name)[0]
+    Student.new_from_db(student_row)
+  end
 end

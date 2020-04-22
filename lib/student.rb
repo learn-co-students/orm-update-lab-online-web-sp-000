@@ -1,8 +1,7 @@
 require_relative "../config/environment.rb"
 
 class Student
-  attr_accessor :name, :grade 
-  attr_reader :id
+  attr_accessor :name, :grade, :id
   # Remember, you can access your database connection anywhere in this class
   #  with DB[:conn]
 
@@ -25,7 +24,7 @@ class Student
   end
 
   def self.drop_table
-    sql = "DROp TABLE IF EXISTS students"
+    sql = "DROP TABLE IF EXISTS students"
 
     DB[:conn].execute(sql)
   end
@@ -40,6 +39,32 @@ class Student
       SQL
 
       DB[:conn].execute(sql, self.name, self.grade)
+      @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
     end
+  end
+
+  def update
+    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
+  end
+
+  def self.create(name, grade)
+    student = self.new(name, grade)
+    student.save 
+    student
+  end
+
+  def self.new_from_db(row)
+    new_student = self.new(row[1], row[2])
+    new_student.id = row[0]
+    new_student
+  end
+
+  def self.find_by_name(name)
+    sql = "SELECT * FROM students WHERE name = ?"
+    result = DB[:conn].execute(sql, name)[0]
+    student = self.new(result[1], result[2])
+    student.id = result[0]
+    student
   end
 end

@@ -1,3 +1,4 @@
+require 'pry'
 require_relative "../config/environment.rb"
 
 class Student
@@ -29,13 +30,17 @@ class Student
   end
 
   def save
-    sql = <<-SQL
-      INSERT INTO students (name, grade)
-      VALUES (?, ?)
-    SQL
- 
-    DB[:conn].execute(sql, self.name, self.grade)
-    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+    if self.id == nil
+      sql = <<-SQL
+        INSERT INTO students (name, grade)
+        VALUES (?, ?)
+      SQL
+      DB[:conn].execute(sql, self.name, self.grade)
+      @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+    else 
+      sql = "UPDATE students SET name = ? WHERE id = ?"
+      DB[:conn].execute(sql, name, id)
+    end 
   end
 
   def self.create(name, grade)
@@ -44,11 +49,11 @@ class Student
     student
   end
 
-  def self.new_from_db(new_student)
-    new_student = self.new
-    new_student.id = row[0]
-    new_student.name = row[1]
-    new_student.grade = row[2]
+  def self.new_from_db(row)
+    id = row[0]
+    name = row[1]
+    grade = row[2]
+    new_student = self.new(id, name, grade)
     new_student
   end
 
@@ -67,8 +72,8 @@ class Student
     sql = "UPDATE students 
     SET name = ?, 
     grade = ? 
-    WHERE name = ?"
-    DB[:conn].execute(sql, self.name, self.grade, self.name)
+    WHERE id = ?"
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
 
 end

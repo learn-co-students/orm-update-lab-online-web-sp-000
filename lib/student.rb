@@ -23,30 +23,34 @@ class Student
     DB[:conn].execute(sql)
   end
   
-  def drop_table
-    sql = "DROP TABLE IS EXISTS students"
+  def self.drop_table
+    sql = "DROP TABLE IF EXISTS students"
     DB[:conn].execute(sql)
   end
   
   def save
-    if self.if
+    if self.id
       self.update
-    sql =<<-SQL
-      INSERT INTO students (name, grade)
-      VALUES ( ?, ?)
-    SQL
-    
-    DB[:conn].execute(sql, self.name, self.grade)
-    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")
+    else
+      sql =<<-SQL
+        INSERT INTO students (name, grade)
+        VALUES ( ?, ?)
+      SQL
+      
+      DB[:conn].execute(sql, self.name, self.grade)
+      @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+    end
   end
   
-  def self.create
-    new_student.new(row(0), row(1), row(2))
-    new_student
+  def self.create(name, grade)
+    student = self.new(name, grade)
+    student.save
+    student
   end
   
   def self.new_from_db(row)
-    
+    new_student = self.new(row[0], row[1], row[2])
+    new_student
   end
   
   def self.find_by_name(name)
@@ -54,13 +58,13 @@ class Student
       SELECT * FROM students WHERE name = ? LIMIT 1
     SQL
     
-    DB[:conn].execute(sql).map do |row|
+    DB[:conn].execute(sql, name).map do |row|
       self.new_from_db(row)
     end.first
   end
   
   def update
-    sql = "UPDATE studetns SET name = ?, grade = ?, id = ?"
+    sql = "UPDATE students SET name = ?, grade = ?, id = ?"
     DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
 

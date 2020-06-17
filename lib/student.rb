@@ -12,7 +12,7 @@ class Student
 
   def self.create_table
     sql = <<-SQL
-      CREATE TABLE students(
+      CREATE TABLE IF NOT EXISTS students(
         id INT PRIMARY KEY,
         name TEXT,
         grade INT
@@ -22,7 +22,7 @@ class Student
   end
 
   def self.drop_table
-    sql = "DROP TABLE students;"
+    sql = "DROP TABLE IF EXISTS students;"
     DB[:conn].execute(sql)
   end
 
@@ -56,12 +56,11 @@ class Student
     new_student
   end
 
-  def self.new_from_db(row)
-    student = self.new(name=nil, grade=nil)
-    student.id = row[0]
-    student.name = row[1]
-    student.grade = row[2]
-    student
+  def self.new_from_db(row)    
+    id = row[0]
+    name = row[1]
+    grade = row[2]
+    self.new(id, name, grade)
   end
 
   def self.find_by_name(name)

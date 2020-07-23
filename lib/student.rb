@@ -31,16 +31,42 @@ def self.drop_table
 end
 
 def save
+  if self.id
+   self.update
+ else
+   sql = <<-SQL
+     INSERT INTO students (name, grade)
+     VALUES (?, ?)
+   SQL
+
+   DB[:conn].execute(sql, self.name, self.grade)
+   @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+ end
 end
 
-def self.create
+def self.create(name, grade)
+  student = Student.new(name, grade)
+  student.save
+  student
 end
 
-def self.new_from_db
+def self.new_from_db(row)
+  id = row[0]
+  name = row[1]
+  grade = row[2]
+  self.new(id, name, grade)
 end
 
-def self.find_by_name
+def self.find_by_name(name)
+  sql = "SELECT * FROM students WHERE name = ?"
+  result = DB[:conn].execute(sql, name).map do |row|
+     self.new_from_db(row)
+   end.first
 end
 
+def update
+  sql = "UPDATE students SET id = ?, name = ? WHERE id = ?"
+  DB[:conn].execute(sql, self.id, self.name, self.id)
+  end
 
 end

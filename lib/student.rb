@@ -23,11 +23,8 @@ class Student
   end
 
   def self.drop_table
-    sql = <<-SQL
-      DROP TABLE students
-    SQL
-
-    DB[:conn].execute(sql  )
+    sql = "DROP TABLE IF EXISTS students"
+    DB[:conn].execute(sql )
   end
 
   def save
@@ -52,7 +49,6 @@ class Student
   def self.create(name, grade)
     student = Student.new(name, grade)
     student.save
-    student
   end
 
   def self.new_from_db(row)

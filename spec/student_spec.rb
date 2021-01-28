@@ -74,36 +74,36 @@ describe "Student" do
     end
   end
 
-  # describe '.new_from_db' do
-  #   it 'creates an instance with corresponding attribute values' do
-  #     row = [1, "Pat", 12]
-  #     pat = Student.new_from_db(row)
+  describe '.new_from_db' do
+    it 'creates an instance with corresponding attribute values' do
+      row = [1, "Pat", 12]
+      pat = Student.new_from_db(row)
 
-  #     expect(pat.id).to eq(row[0])
-  #     expect(pat.name).to eq(row[1])
-  #     expect(pat.grade).to eq(row[2])
-  #   end
-  # end
+      expect(pat.id).to eq(row[0])
+      expect(pat.name).to eq(row[1])
+      expect(pat.grade).to eq(row[2])
+    end
+  end
 
-  # describe '.find_by_name' do
-  #   it 'returns an instance of student that matches the name from the DB' do
-  #     josh.save
-  #     josh_id = josh.id
-  #     josh_from_db = Student.find_by_name("Josh")
-  #     expect(josh_from_db.name).to eq("Josh")
-  #     expect(josh_from_db.grade).to eq("9th")
-  #     expect(josh_from_db.id).to eq(josh_id)
-  #     expect(josh_from_db).to be_an_instance_of(Student)
-  #   end
-  # end
+  describe '.find_by_name' do
+    it 'returns an instance of student that matches the name from the DB' do
+      josh.save
+      josh_id = josh.id
+      josh_from_db = Student.find_by_name("Josh")
+      expect(josh_from_db.name).to eq("Josh")
+      expect(josh_from_db.grade).to eq("9th")
+      expect(josh_from_db.id).to eq(josh_id)
+      expect(josh_from_db).to be_an_instance_of(Student)
+    end
+  end
 
-  # describe '#update' do
-  #   it 'updates the record associated with a given instance' do
-  #     josh.save
-  #     josh.name = "Josh Jr."
-  #     josh.update
-  #     josh_jr = Student.find_by_name("Josh Jr.")
-  #     expect(josh_jr.id).to eq(josh.id)
-  #   end
-  # end
+  describe '#update' do
+    it 'updates the record associated with a given instance' do
+      josh.save
+      josh.name = "Josh Jr."
+      josh.update
+      josh_jr = Student.find_by_name("Josh Jr.")
+      expect(josh_jr.id).to eq(josh.id)
+    end
+  end
 end

@@ -38,9 +38,7 @@ class Student
     if id
       update
     else
-      sql = <<-SQL
-        INSERT INTO students (name, grade) VALUES (?, ?)
-      SQL
+      sql = "INSERT INTO students (name, grade) VALUES (?, ?)"
 
       DB[:conn].execute(sql, self.name, self.grade)
       @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
@@ -53,9 +51,9 @@ class Student
   end
 
   def self.find_by_name(name)
-      student = DB[:conn].execute("SELECT * FROM students WHERE name = ?", name).first
-      self.new_from_db(student)
+    sql = "SELECT * FROM students WHERE name = ?"
+    student = DB[:conn].execute(sql, name).first
+    self.new_from_db(student)
   end
-
 
 end
